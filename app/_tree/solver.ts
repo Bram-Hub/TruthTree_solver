@@ -17,11 +17,16 @@ export class TruthTreeSolver {
   // Inner representation of the tree
   public tree: TruthTree;
   public contradictionMap: { [key: number]: Set<Statement> };
+  public debugMode: boolean = false;
 
   constructor(jsonTreeText: string) {
     this.tree = TruthTree.deserialize(jsonTreeText);
     this.contradictionMap = {};
     this.cleanNonPremise();
+  }
+
+  private log(...messages: any[]) {
+    if (this.debugMode) console.log(...messages);
   }
 
   private cleanNonPremise() {
@@ -81,7 +86,7 @@ export class TruthTreeSolver {
 
       // If the leaf is not a descendant of the node, skip it
       // We only want to expand the branches that are relevant to the node
-      if (!node.isAncestorOf(leafId)) {
+      if (!node.isAncestorOf(leafId) && leafId !== node.id) {
         continue;
       }
 
@@ -134,7 +139,7 @@ export class TruthTreeSolver {
         for (const statementToAdd of decomposition[0]) {
           const newNodeId = this.tree.addNodeAfter(trailNodeId, false);
           if (newNodeId === null) {
-            console.log("Error Applying Expansion: Could not add node");
+            this.log("Error Applying Expansion: Could not add node");
             return;
           }
           const newNode = this.tree.nodes[newNodeId];
@@ -159,7 +164,7 @@ export class TruthTreeSolver {
             );
             firstNodeToAdd = false;
             if (newNodeId === null) {
-              console.log(
+              this.log(
                 "Error Applying Expansion: Could not add node in branching"
               );
               return;
@@ -195,7 +200,7 @@ export class TruthTreeSolver {
   private applyOpenTerminator(nodeId: number) {
     const terminatorId = this.tree.addNodeAfter(nodeId, false);
     if (terminatorId === null) {
-      console.log("Error Applying Open Terminator: Could not add node");
+      this.log("Error Applying Open Terminator: Could not add node");
       return;
     }
     const terminatorNode = this.tree.nodes[terminatorId];
@@ -205,7 +210,7 @@ export class TruthTreeSolver {
   private applyClosedTerminator(nodeId: number, ref1: number, ref2: number) {
     const terminatorId = this.tree.addNodeAfter(nodeId, false);
     if (terminatorId === null) {
-      console.log("Error Applying Closed Terminator: Could not add node");
+      this.log("Error Applying Closed Terminator: Could not add node");
       return;
     }
     const terminatorNode = this.tree.nodes[terminatorId];
@@ -215,7 +220,7 @@ export class TruthTreeSolver {
 
   private tryClosedTerminator(nodeId: number) {
     if (!this.tree.leaves.has(nodeId)) {
-      console.log("Node is not a leaf");
+      this.log("Node is not a leaf");
       return;
     }
 
@@ -305,7 +310,7 @@ export class TruthTreeSolver {
   expand(): boolean {
     const legalExpansions = this.possibleExpansions();
     if (legalExpansions.length === 0) {
-      console.log("No legal expansions");
+      this.log("No legal expansions");
       for (const leafId of Array.from(this.tree.leaves)) {
         if (this.tree.nodes[leafId].isTerminator()) {
           continue;
@@ -316,7 +321,7 @@ export class TruthTreeSolver {
     }
     const bestExpansion = this.determineBestExpansion(legalExpansions);
     if (bestExpansion) {
-      console.log("Expanding", bestExpansion.nodeId, bestExpansion.leaves);
+      this.log("Expanding", bestExpansion.nodeId, bestExpansion.leaves);
       const newLeaves = this.applyExpansion(
         bestExpansion.nodeId,
         bestExpansion.leaves
