@@ -1,0 +1,48 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "P  ∨  Q",
+      "children": [
+        1
+      ],
+      "decomposition": [],
+      "premise": true
+    },
+    {
+      "id": 1,
+      "text": "R  ∨  S",
+      "children": [
+        2,
+        3
+      ],
+      "decomposition": [
+        2,
+        3
+      ],
+      "premise": true,
+      "parent": 0
+    },
+    {
+      "id": 2,
+      "text": "R",
+      "children": [],
+      "decomposition": [],
+      "parent": 1,
+      "antecedent": 1
+    },
+    {
+      "id": 3,
+      "text": "S",
+      "children": [],
+      "decomposition": [],
+      "parent": 1,
+      "antecedent": 1
+    }
+  ],
+  "options": {
+    "requireAtomicContradiction": true,
+    "requireAllBranchesTerminated": true,
+    "lockedOptions": false
+  }
+}

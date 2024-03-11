@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "M  →  (K  →  B)",
+      "children": [
+        1
+      ],
+      "decomposition": [],
+      "premise": true
+    },
+    {
+      "id": 1,
+      "text": "¬K  →  ¬M",
+      "children": [
+        2
+      ],
+      "decomposition": [],
+      "premise": true,
+      "parent": 0
+    },
+    {
+      "id": 2,
+      "text": "L  ∧  M",
+      "children": [
+        3
+      ],
+      "decomposition": [],
+      "premise": true,
+      "parent": 1
+    },
+    {
+      "id": 3,
+      "text": "¬B",
+      "children": [],
+      "decomposition": [],
+      "premise": true,
+      "parent": 2
+    }
+  ],
+  "options": {
+    "lockedOptions": true,
+    "requireAtomicContradiction": true,
+    "requireAllBranchesTerminated": true
+  }
+}

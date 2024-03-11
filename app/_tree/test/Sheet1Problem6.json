@@ -1,0 +1,26 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A  ∧  (B  →  C)",
+      "children": [
+        1
+      ],
+      "decomposition": [],
+      "premise": true
+    },
+    {
+      "id": 1,
+      "text": "(A  ∧  B)  ∨  (A  ∧  C)",
+      "children": [],
+      "decomposition": [],
+      "premise": true,
+      "parent": 0
+    }
+  ],
+  "options": {
+    "lockedOptions": true,
+    "requireAtomicContradiction": true,
+    "requireAllBranchesTerminated": true
+  }
+}

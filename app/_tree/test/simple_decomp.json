@@ -1,0 +1,26 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "P  or  Q",
+      "children": [
+        1
+      ],
+      "decomposition": [],
+      "premise": true
+    },
+    {
+      "id": 1,
+      "text": "R  or  S",
+      "children": [],
+      "decomposition": [],
+      "premise": true,
+      "parent": 0
+    }
+  ],
+  "options": {
+    "requireAtomicContradiction": true,
+    "requireAllBranchesTerminated": true,
+    "lockedOptions": false
+  }
+}
