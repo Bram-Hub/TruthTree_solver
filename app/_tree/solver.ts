@@ -29,6 +29,10 @@ export class TruthTreeSolver {
     if (this.debugMode) console.log(...messages);
   }
 
+  /**
+   * Removes all non-premise nodes from the tree.
+   * Assuming all premise nodes are at the start of the tree.
+   */
   private cleanNonPremise() {
     const cleanNode = (nodeId: number) => {
       const node = this.tree.nodes[nodeId];
@@ -71,6 +75,11 @@ export class TruthTreeSolver {
     return branch;
   }
 
+  /**
+   * Calculates the current branches that need to be expanded from the node
+   * @param nodeId The node that can be expanded
+   * @returns A set of leaf nodes that needed to be expanded from the node
+   */
   private determineExpansionBranches(nodeId: number): Array<number> {
     const node = this.tree.nodes[nodeId];
 
@@ -112,9 +121,9 @@ export class TruthTreeSolver {
   }
 
   /**
-   * Need work
-   * @param expansions
-   * @returns
+   * Determines the best expansion from a set of legal expansions
+   * @param expansions A set of legal expansions of the tree
+   * @returns The best expansion
    */
   private determineBestExpansion(
     expansions: LegalExpansion[]
@@ -124,6 +133,12 @@ export class TruthTreeSolver {
     return expansions[0];
   }
 
+  /**
+   * Applies the expansion to the tree
+   * @param nodeId The node that will be expanded
+   * @param leaves A set of leaf nodes that the expansion will be applied
+   * @returns A set of edited leaves after applying the expansion
+   */
   private applyExpansion(nodeId: number, leaves: Array<number>) {
     const decomposition = this.tree.nodes[nodeId].statement?.decompose();
 
@@ -197,6 +212,10 @@ export class TruthTreeSolver {
     return new Set(addedNodes.filter((id) => this.tree.leaves.has(id)));
   }
 
+  /**
+   * Adds an open terminator to the tree after the given node
+   * @param nodeId The leaf node to apply the open terminator
+   */
   private applyOpenTerminator(nodeId: number) {
     const terminatorId = this.tree.addNodeAfter(nodeId, false);
     if (terminatorId === null) {
@@ -207,6 +226,12 @@ export class TruthTreeSolver {
     terminatorNode.text = TruthTree.OPEN_TERMINATOR;
   }
 
+  /**
+   * Adds a closed terminator to the tree after the given node
+   * @param nodeId The leaf node to apply the closed terminator
+   * @param ref1 The first reference node for the closed terminator
+   * @param ref2 The second reference node for the closed terminator
+   */
   private applyClosedTerminator(nodeId: number, ref1: number, ref2: number) {
     const terminatorId = this.tree.addNodeAfter(nodeId, false);
     if (terminatorId === null) {
@@ -218,6 +243,10 @@ export class TruthTreeSolver {
     terminatorNode.text = TruthTree.CLOSED_TERMINATOR;
   }
 
+  /**
+   * Checks if the leaf node is qualified for a closed terminator
+   * @param nodeId The leaf node to check for a closed terminator
+   */
   private tryClosedTerminator(nodeId: number) {
     if (!this.tree.leaves.has(nodeId)) {
       this.log("Node is not a leaf");
@@ -305,7 +334,9 @@ export class TruthTreeSolver {
   }
 
   /**
-   * Expands the tree by one step
+   * Expands the tree by one step, applying the best possible expansion
+   * determined by determineBestExpansion function.
+   * Returns true if the tree require more expansion, false otherwise.
    */
   expand(): boolean {
     const legalExpansions = this.possibleExpansions();
@@ -336,7 +367,7 @@ export class TruthTreeSolver {
   }
 
   /**
-   *
+   * Returns all the possible expansions of the tree
    */
   possibleExpansions(): LegalExpansion[] {
     let legalExpansions: LegalExpansion[] = [];
@@ -354,7 +385,7 @@ export class TruthTreeSolver {
   }
 
   /**
-   *
+   * Expands the tree until it is finished
    */
   expandAll() {
     while (this.expand());

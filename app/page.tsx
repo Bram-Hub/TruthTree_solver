@@ -1,23 +1,8 @@
 "use client";
 import { useRef, useState } from "react";
-import decomp from "./_tree/test/DS.json";
 import { TruthTreeSolver } from "./_tree/solver";
 
 export default function Home() {
-  // const tree = TruthTree.deserialize(JSON.stringify(decomp));
-  // for (const nodeId in tree.nodes) {
-  //   const node = tree.nodes[nodeId];
-  //   console.log(node.isDecomposed());
-  // }
-
-  // const solver = new TruthTreeSolver(JSON.stringify(decomp));
-  // solver.expandAll();
-  // // solver.expand();
-
-  // console.log(solver.toString());
-  // console.log(solver.isFinished());
-  // console.log(solver.tree.leaves.size);
-  // console.log(solver.tree.serialize());
   const [tree, setTree] = useState<TruthTreeSolver | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
