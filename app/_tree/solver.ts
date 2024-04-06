@@ -19,10 +19,10 @@ export class TruthTreeSolver {
   public contradictionMap: { [key: number]: Set<Statement> };
   public debugMode: boolean = false;
 
-  constructor(jsonTreeText: string) {
+  constructor(jsonTreeText: string, cleanNonPremise = true) {
     this.tree = TruthTree.deserialize(jsonTreeText);
     this.contradictionMap = {};
-    this.cleanNonPremise();
+    if (cleanNonPremise) this.cleanNonPremise();
   }
 
   private log(...messages: any[]) {
