@@ -30,6 +30,7 @@ export default function Home() {
       return alert("You must select a file to open.");
     }
 
+    treeHistory.current = []; // Clear the history
     const reader = new FileReader();
     reader.readAsText(fileName, "UTF-8");
 
