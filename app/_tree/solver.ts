@@ -6,6 +6,11 @@ interface LegalExpansion {
   leaves: Array<number>;
 }
 
+export type ExpansionFunction = (
+  tree: TruthTree,
+  expansions: LegalExpansion[]
+) => LegalExpansion;
+
 export class TruthTreeSolver {
   static treeEvaluationFunction = (tree: TruthTree) => {
     console.log("Tree evaluation function called");
@@ -127,10 +132,7 @@ export class TruthTreeSolver {
    */
   private determineBestExpansion(
     expansions: LegalExpansion[],
-    expansionFunction?: (
-      tree: TruthTree,
-      expansions: LegalExpansion[]
-    ) => LegalExpansion
+    expansionFunction?: ExpansionFunction
   ): LegalExpansion {
     if (expansionFunction) {
       return expansionFunction(this.tree, expansions);
@@ -145,52 +147,6 @@ export class TruthTreeSolver {
    */
   public firstExpansion(expansions: LegalExpansion[]): LegalExpansion {
     return expansions[0];
-  }
-
-  /**
-   * Determine the best expansion by prioritizing the expansion with the least number of branches after decomposing
-   * @param expansions A set of legal expansions of the tree
-   * @returns the expansion with the least number of branches after decomposing
-   */
-  public prioritizeLessBranch(
-    tree: TruthTree,
-    expansions: LegalExpansion[]
-  ): LegalExpansion {
-    const expansionCounts = expansions.map(({ nodeId }, index) => {
-      return {
-        decompose: tree.nodes[nodeId].statement?.decompose().length || 1,
-        index,
-      };
-    });
-
-    const expansionIndex = expansionCounts.reduce((acc, curr) =>
-      acc.decompose < curr.decompose ? acc : curr
-    ).index;
-
-    return expansions[expansionIndex];
-  }
-
-  /**
-   * Determine the best expansion by prioritizing the expansion with the most number of branches after decomposing
-   * @param expansions A set of legal expansions of the tree
-   * @returns the expansion with the most number of branches after decomposing
-   */
-  public prioritizeMoreBranch(
-    tree: TruthTree,
-    expansions: LegalExpansion[]
-  ): LegalExpansion {
-    const expansionCounts = expansions.map(({ nodeId }, index) => {
-      return {
-        decompose: tree.nodes[nodeId].statement?.decompose().length || 1,
-        index,
-      };
-    });
-
-    const expansionIndex = expansionCounts.reduce((acc, curr) =>
-      acc.decompose > curr.decompose ? acc : curr
-    ).index;
-
-    return expansions[expansionIndex];
   }
 
   /**
@@ -398,12 +354,7 @@ export class TruthTreeSolver {
    * determined by determineBestExpansion function.
    * Returns true if the tree require more expansion, false otherwise.
    */
-  expand(
-    expansionFunction?: (
-      tree: TruthTree,
-      expansions: LegalExpansion[]
-    ) => LegalExpansion
-  ): boolean {
+  expand(expansionFunction?: ExpansionFunction): boolean {
     const legalExpansions = this.possibleExpansions();
     if (legalExpansions.length === 0) {
       this.log("No legal expansions");
@@ -456,12 +407,67 @@ export class TruthTreeSolver {
   /**
    * Expands the tree until it is finished
    */
-  expandAll(
-    expansionFunction?: (
-      tree: TruthTree,
-      expansions: LegalExpansion[]
-    ) => LegalExpansion
-  ) {
+  expandAll(expansionFunction?: ExpansionFunction) {
     while (this.expand(expansionFunction));
+  }
+}
+
+export class TruthTreeExpansion {
+  /**
+   * Determines the best expansion from a set of legal expansions
+   * @param expansions A set of legal expansions of the tree
+   * @returns The first expansion in the set
+   */
+  public static firstExpansion(
+    tree: TruthTree,
+    expansions: LegalExpansion[]
+  ): LegalExpansion {
+    return expansions[0];
+  }
+
+  /**
+   * Determine the best expansion by prioritizing the expansion with the least number of branches after decomposing
+   * @param expansions A set of legal expansions of the tree
+   * @returns the expansion with the least number of branches after decomposing
+   */
+  public static prioritizeLessBranch(
+    tree: TruthTree,
+    expansions: LegalExpansion[]
+  ): LegalExpansion {
+    const expansionCounts = expansions.map(({ nodeId }, index) => {
+      return {
+        decompose: tree.nodes[nodeId].statement?.decompose().length || 1,
+        index,
+      };
+    });
+
+    const expansionIndex = expansionCounts.reduce((acc, curr) =>
+      acc.decompose < curr.decompose ? acc : curr
+    ).index;
+
+    return expansions[expansionIndex];
+  }
+
+  /**
+   * Determine the best expansion by prioritizing the expansion with the most number of branches after decomposing
+   * @param expansions A set of legal expansions of the tree
+   * @returns the expansion with the most number of branches after decomposing
+   */
+  public static prioritizeMoreBranch(
+    tree: TruthTree,
+    expansions: LegalExpansion[]
+  ): LegalExpansion {
+    const expansionCounts = expansions.map(({ nodeId }, index) => {
+      return {
+        decompose: tree.nodes[nodeId].statement?.decompose().length || 1,
+        index,
+      };
+    });
+
+    const expansionIndex = expansionCounts.reduce((acc, curr) =>
+      acc.decompose > curr.decompose ? acc : curr
+    ).index;
+
+    return expansions[expansionIndex];
   }
 }
