@@ -2,7 +2,6 @@
 import { useRef, useState } from "react";
 import { TruthTreeSolver } from "./_tree/solver";
 import TruthTreeDisplay from "@/components/truthtree";
-import { TruthTree } from "./_tree/lib/tree";
 
 export default function Home() {
   const [tree, setTree] = useState<TruthTreeSolver | null>(null);
@@ -53,7 +52,7 @@ export default function Home() {
     if (!tree) return;
     // Save the current tree to the history
     treeHistory.current.push(tree.tree.serialize());
-    tree.expand();
+    tree.expand(tree.prioritizeMoreBranch);
     reload((prev) => prev + 1);
   };
 
@@ -76,7 +75,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-row-reverse items-center justify-between py-24 px-16 gap-8">
+    <main className="flex min-h-screen flex-col items-start justify-between py-12 px-16 gap-8">
       <section className="h-full flex flex-col gap-4">
         <input
           type="file"
